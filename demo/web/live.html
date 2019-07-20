@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>围观界面</title>
+</head>
+<body>
+    <img src="recive" style="width: 400px; height: 330px;">
+    <script>
+
+        const recive_socket = new WebSocket("ws://localhost:8080/demo/onlineServer");
+        const image = document.getElementById("recive");
+
+        // 把服务器的数据转发给img路径
+        recive_socket.onmessage = function (info) {
+            image.src = info.data;
+        }
+    </script>
+
+</body>
+</html>

@@ -21,17 +21,17 @@ public class OnlineServer {
       this.session = session;
       // 将当前客户端加入客户端列表
       clientServer.add(this);
-      System.out.println("新连接建立");
+      System.out.println("onOpen新连接连接");
   }
 
   @OnClose
     public void onClose() {
       clientServer.remove(this);
-      System.out.println("有一个连接");
+      System.out.println("onClose有一个连接");
   }
 
   @OnMessage
-   public void OnMessage(String message, Session S){
+   public void OnMessage(String message, Session session){
     // 群发消息 广播消息
       for (OnlineServer onlineServer : clientServer) {
           try {

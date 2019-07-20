@@ -10,19 +10,59 @@
 <canvas id="output" style="display: none;"></canvas>
     <script>
 
-    const backContext = document.getElementById("output").getContext;
+   const backContext = document.getElementById("output").getContext("2d");
 
-    const video = document.getElementById("vi");
+   const video = document.getElementById("vi");
+
+   const back = document.getElementById("output");
+
+   let socket;
+
+   let interval;
+
+   setTimeout("init()",100);
+
+   function init() {
+    // 需要浏览器支持
+    // 建立websocket的服务
+    socket = new WebSocket("ws://localhost:8080/demo/onlineServer");
+
+    socket.onopen = onOpen;
+    socket.onclose = onClose;
+   }
+
+
+   function onOpen() {
+       // 定时传送数据到服务器
+
+       interval = setInterval(function() {
+           draw()
+       },50)
+
+   }
+
+   // 重现调用init
+   function onClose() {
+       init();
+   }
+
+    //
     function draw(){
-      
-       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-       
-       navigator.getUserMedia({video:true, audio:false},success,console.log);
+        // 将视频的图像0px 0px 宽 高
+        backContext.drawImage(video,0,0,back.width,back.height);
+
+        // 将视频的图像 50%的像素发送出去
+        socket.send(back.toDataURL("image/jpeg",0.5));
+
+
+
   }
     const success = function(mediaSource) {
 
      try {
-        video.srcObject =mediaSource;
+
+
+         video.srcObject =mediaSource;
      } catch (error) {
          /**
           * 当我传递给createObjectURL原始数据时，我遇到了同样的错误：
@@ -57,8 +97,18 @@
      }
       // video.play();
     }
-     
-    draw();
+
+    const error = function(error) {
+        console.dir(error);
+    }
+
+   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+   // 需要先检查是否有摄像头或则麦克风，没有请设置为false
+   navigator.getUserMedia({video:false, audio:true},success,error);
+
   </script>
+
+<p>出来了。。。。。。。。。。</p>
 </body>
 </html>
