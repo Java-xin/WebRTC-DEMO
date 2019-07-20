@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主播开播界面</title>
+</head>
+<body>
+    <!-- 如何使用浏览器调用设备的摄像头，并且能够获取他的数据展现出来 -->
+<video id="vi" src="" autoplay style="width: 640px; height: 480px;"></video>
+<canvas id="output" style="display: none;"></canvas>
+    <script>
+
+    const backContext = document.getElementById("output").getContext;
+
+    const video = document.getElementById("vi");
+    function draw(){
+      
+       navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+       
+       navigator.getUserMedia({video:true, audio:false},success,console.log);
+  }
+    const success = function(mediaSource) {
+
+     try {
+        video.srcObject =mediaSource;
+     } catch (error) {
+         /**
+          * 当我传递给createObjectURL原始数据时，我遇到了同样的错误：
+
+          window.URL.createObjectURL(data)
+          它必须是Blob，File或MediaSource对象，而不是数据本身。这对我有用：
+
+          var binaryData = [];
+          binaryData.push(data);
+          window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
+
+          14
+
+          我的代码被破坏了，因为我使用了弃用的东西。它曾经是这样的：
+
+          video.src = window.URL.createObjectURL(localMediaStream);
+          video.play();
+          然后我用这个代替了：
+
+          video.srcObject = localMediaStream;
+          video.play();
+          这非常有效。
+
+          参考文献：
+
+          不推荐的技术：https：//developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+          现代技术：https：//developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+          *
+          *
+          */
+         video.src = URL.createObjectURL(mediaSource);
+     }
+      // video.play();
+    }
+     
+    draw();
+  </script>
+</body>
+</html>
